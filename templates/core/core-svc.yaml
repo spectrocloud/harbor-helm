@@ -12,13 +12,22 @@ spec:
 {{- if or (eq .Values.expose.ingress.controller "gce") (eq .Values.expose.ingress.controller "alb")  (eq .Values.expose.ingress.controller "f5-bigip") }}
   type: NodePort
 {{- end }}
+{{- if eq .Values.expose.type "nodePort" }}
+  type: NodePort
+{{- end }}
   ports:
     - name: {{ ternary "https-web" "http-web" .Values.internalTLS.enabled }}
       port: {{ template "harbor.core.servicePort" . }}
       targetPort: {{ template "harbor.core.containerPort" . }}
+      {{- if eq .Values.expose.type "nodePort" }}
+      nodePort: {{ .Values.core.service.httpWeb.nodePort }}
+      {{- end }}
 {{- if .Values.metrics.enabled}}
     - name: {{ template "harbor.metricsPortName" . }}
       port: {{ .Values.metrics.core.port }}
+      {{- if eq .Values.expose.type "nodePort" }}
+      nodePort: {{ .Values.metrics.core.nodePort }}
+      {{- end }}
 {{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}

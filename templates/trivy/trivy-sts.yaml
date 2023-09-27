@@ -208,6 +208,10 @@ spec:
       {{- end }}
     spec:
       accessModes: [{{ $trivy.accessMode | quote }}]
+  {{- if .Values.global.persistence.hostPath }}
+      volumeName: {{ include "harbor.trivy" . }}
+      storageClassName: ""
+  {{- end }}
       {{- if $trivy.storageClass }}
       {{- if (eq "-" $trivy.storageClass) }}
       storageClassName: ""

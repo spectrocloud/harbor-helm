@@ -1,0 +1,21 @@
+{{- if .Values.global.persistence.hostPath }}
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ template "harbor.database" . }}
+  annotations:
+    {{- if eq .Values.persistence.resourcePolicy "keep" }}
+    helm.sh/resource-policy: keep
+  {{- end }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: database
+spec:
+  storageClassName: ""
+  capacity:
+    storage: {{ .Values.persistence.persistentVolumeClaim.database.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.global.persistence.hostPath }}/{{ include "harbor.database" . }}
+{{- end}}

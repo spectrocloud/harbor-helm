@@ -5,15 +5,26 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
+  {{- if eq .Values.expose.type "nodePort" }}
+  type: NodePort
+  {{- end }}
   ports:
     - name: {{ ternary "https-registry" "http-registry" .Values.internalTLS.enabled }}
       port: {{ template "harbor.registry.servicePort" . }}
-
+      {{- if eq .Values.expose.type "nodePort" }}
+      nodePort: {{ .Values.registry.service.httpRegistry.nodePort }}
+      {{- end }}
     - name: {{ ternary "https-controller" "http-controller" .Values.internalTLS.enabled }}
       port: {{ template "harbor.registryctl.servicePort" . }}
+      {{- if eq .Values.expose.type "nodePort" }}
+      nodePort: {{ .Values.registry.service.httpController.nodePort }}
+      {{- end }}
 {{- if .Values.metrics.enabled}}
     - name: {{ template "harbor.metricsPortName" . }}
       port: {{ .Values.metrics.registry.port }}
+      {{- if eq .Values.expose.type "nodePort" }}
+      nodePort: {{ .Values.metrics.registry.nodePort }}
+      {{- end }}
 {{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}

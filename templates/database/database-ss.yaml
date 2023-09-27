@@ -153,6 +153,10 @@ spec:
         {{ $key }}: {{ $value | quote }}
       {{- end }}
     spec:
+  {{- if .Values.global.persistence.hostPath }}
+      volumeName: {{ include "harbor.database" . }}
+      storageClassName: ""
+  {{- end }}
       accessModes: [{{ $database.accessMode | quote }}]
       {{- if $database.storageClass }}
       {{- if (eq "-" $database.storageClass) }}

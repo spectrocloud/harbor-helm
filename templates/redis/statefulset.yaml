@@ -101,6 +101,10 @@ spec:
         {{ $key }}: {{ $value | quote }}
       {{- end }}
     spec:
+  {{- if .Values.global.persistence.hostPath }}
+      volumeName: {{ include "harbor.redis" . }}
+      storageClassName: ""
+  {{- end }}
       accessModes: [{{ $redis.accessMode | quote }}]
       {{- if $redis.storageClass }}
       {{- if (eq "-" $redis.storageClass) }}
