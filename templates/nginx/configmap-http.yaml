@@ -48,7 +48,8 @@ data:
         '"$http_referer" "$http_user_agent" '
         '$request_time $upstream_response_time $pipe';
 
-      access_log /dev/stdout timed_combined;
+      access_log off;
+      error_log /dev/stdout;
 
       map $http_x_forwarded_proto $x_forwarded_proto {
         default $http_x_forwarded_proto;
