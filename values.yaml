@@ -198,13 +198,12 @@ persistence:
       size: 5Gi
       annotations: {}
     jobservice:
-      jobLog:
-        existingClaim: ""
-        storageClass: ""
-        subPath: ""
-        accessMode: ReadWriteOnce
-        size: 1Gi
-        annotations: {}
+      existingClaim: ""
+      storageClass: ""
+      subPath: ""
+      accessMode: ReadWriteOnce
+      size: 1Gi
+      annotations: {}
     # If external database is used, the following settings for database will
     # be ignored
     database:
