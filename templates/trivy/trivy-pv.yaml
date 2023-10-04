@@ -1,0 +1,25 @@
+{{- if .Values.trivy.enabled }}
+{{- if .Values.persistence.enabled }}
+{{- if .Values.global.persistence.hostPath }}
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ include "harbor.trivy" . }}
+  annotations:
+    {{- if eq .Values.persistence.resourcePolicy "keep" }}
+    helm.sh/resource-policy: keep
+  {{- end }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: trivy
+spec:
+  storageClassName: ""
+  capacity:
+    storage: {{ .Values.persistence.persistentVolumeClaim.trivy.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.global.persistence.hostPath }}/{{ include "harbor.trivy" . }}
+{{- end }}
+{{- end }}
+{{- end }}

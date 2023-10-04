@@ -20,6 +20,10 @@ spec:
   resources:
     requests:
       storage: {{ $jobLog.size }}
+  {{- if .Values.global.persistence.hostPath }}
+  volumeName: {{ include "harbor.jobservice" . }}
+  storageClassName: ""
+  {{- end }}
   {{- if $jobLog.storageClass }}
     {{- if eq "-" $jobLog.storageClass }}
   storageClassName: ""

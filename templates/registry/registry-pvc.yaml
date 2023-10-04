@@ -21,6 +21,10 @@ spec:
   resources:
     requests:
       storage: {{ $registry.size }}
+  {{- if .Values.global.persistence.hostPath }}
+  volumeName: {{ include "harbor.registry" . }}
+  storageClassName: ""
+  {{- end }}
   {{- if $registry.storageClass }}
     {{- if eq "-" $registry.storageClass }}
   storageClassName: ""

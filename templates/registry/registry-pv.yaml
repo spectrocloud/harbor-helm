@@ -1,0 +1,26 @@
+{{- if .Values.persistence.enabled }}
+{{- $registry := .Values.persistence.persistentVolumeClaim.registry -}}
+{{- if and (not $registry.existingClaim) (eq .Values.persistence.imageChartStorage.type "filesystem") }}
+{{- if .Values.global.persistence.hostPath }}
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: {{ template "harbor.registry" . }}
+  annotations:
+    {{- if eq .Values.persistence.resourcePolicy "keep" }}
+    helm.sh/resource-policy: keep
+  {{- end }}
+  labels:
+{{ include "harbor.labels" . | indent 4 }}
+    component: registry
+spec:
+  storageClassName: ""
+  capacity:
+    storage: {{ .Values.persistence.persistentVolumeClaim.registry.size }}
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: {{ .Values.global.persistence.hostPath }}/{{ include "harbor.registry" . }}
+{{- end }}
+{{- end }}
+{{- end }}

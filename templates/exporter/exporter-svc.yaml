@@ -6,9 +6,15 @@ metadata:
   labels:
 {{ include "harbor.labels" . | indent 4 }}
 spec:
+  {{- if eq .Values.expose.type "nodePort" }}
+  type: NodePort
+  {{- end }}
   ports:
     - name: {{ template "harbor.metricsPortName" . }}
       port: {{ .Values.metrics.exporter.port }}
+      {{- if eq .Values.expose.type "nodePort" }}
+      nodePort: {{ .Values.metrics.exporter.nodePort }}
+      {{- end }}
   selector:
 {{ include "harbor.matchLabels" . | indent 4 }}
     component: exporter
